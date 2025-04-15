@@ -1,0 +1,260 @@
+{% extends 'adminpannel.html' %}
+{% load static %}
+
+{% block content %}
+<meta name="robots" content="noindex">
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #ffffff;
+        color: #333333;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .facility-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .facility-title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #333333;
+    }
+
+    .add-btn {
+        text-decoration: none;
+        background-color: #333333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 50%;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s;
+    }
+
+    .add-btn:hover {
+        opacity: 0.8;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #dddddd;
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 14px;
+        border: 1px solid #dddddd;
+    }
+
+    th {
+        background-color: #f4f4f4;
+        font-weight: 600;
+    }
+
+    .description-text {
+        max-width: 250px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .image-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .facility-image {
+        width: 70px;
+        height: 50px;
+        object-fit: cover;
+        border-radius: 4px;
+        border: 1px solid #d1d5db;
+    }
+
+    .video-link {
+        color: #007bff;
+        font-size: 13px;
+        text-decoration: underline;
+    }
+
+    .video-link:hover {
+        text-decoration: none;
+    }
+
+    .no-content {
+        color: #999999;
+        font-style: italic;
+        font-size: 13px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: none;
+        text-decoration: none;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .edit-btn {
+        background-color: #e0f0ff;
+        color: #007bff;
+    }
+
+    .edit-btn:hover {
+        background-color: #cce5ff;
+    }
+
+    .delete-btn {
+        background-color: #ffe0e0;
+        color: #ff0000;
+    }
+
+    .delete-btn:hover {
+        background-color: #ffcccc;
+    }
+
+    .pagination {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .pagination-btn {
+        background-color: #f4f4f4;
+        color: #333333;
+        padding: 6px 12px;
+        margin: 0 4px;
+        border-radius: 4px;
+        font-size: 13px;
+        text-decoration: none;
+    }
+
+    .pagination-btn:hover {
+        background-color: #e0e0e0;
+    }
+
+    .current-page {
+        font-size: 13px;
+        margin: 0 8px;
+        color: #333;
+    }
+
+    .empty-message {
+        background-color: #fef9c3;
+        padding: 18px;
+        border-left: 4px solid #facc15;
+        border-radius: 6px;
+        margin-top: 20px;
+        color: #92400e;
+        font-size: 15px;
+        text-align: center;
+    }
+</style>
+
+<div class="facility-wrapper">
+    <div class="facility-header">
+        <h2 class="facility-title">Facility List</h2>
+        <a href="/facility/add/" class="add-btn" title="Add New Facility">+</a>
+    </div>
+
+    {% if facilities %}
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Description</th>
+                    <th>Images</th>
+                    <th>Videos</th>
+                    <th style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for facility in facilities %}
+                <tr>
+                    <td>{{ facility.id }}</td>
+                    <td>{{ facility.name }}</td>
+                    <td>
+                        <div><strong>Country:</strong> {{ facility.country }}</div>
+                        <div><strong>State:</strong> {{ facility.state }}</div>
+                        <div><strong>District:</strong> {{ facility.district }}</div>
+                        <div><strong>City:</strong> {{ facility.city }}</div>
+                    </td>
+                    <td class="description-text">{{ facility.description|linebreaksbr }}</td>
+                    <td>
+                        <div class="image-container">
+                            {% for img in facility.images.all %}
+                                <img src="{{ img.image.url }}" alt="Facility Image" class="facility-image">
+                            {% empty %}
+                                <span class="no-content">No Images</span>
+                            {% endfor %}
+                        </div>
+                    </td>
+                    <td>
+                        {% for video in facility.videos.all %}
+                            <a href="{{ video.link }}" target="_blank" class="video-link">Video {{ forloop.counter }}</a><br>
+                        {% empty %}
+                            <span class="no-content">No Videos</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a href="{% url 'edit_facility' facility.id %}" class="action-btn edit-btn" title="Edit">📝</a>
+                            <a href="{% url 'delete_facility' facility.id %}" class="action-btn delete-btn" title="Delete" onclick="return confirm('Are you sure you want to delete this facility?');">❌</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination">
+        {% if facilities.has_previous %}
+            <a href="?page={{ facilities.previous_page_number }}" class="pagination-btn">Previous</a>
+        {% endif %}
+        <span class="current-page">Page {{ facilities.number }} of {{ facilities.paginator.num_pages }}</span>
+        {% if facilities.has_next %}
+            <a href="?page={{ facilities.next_page_number }}" class="pagination-btn">Next</a>
+        {% endif %}
+    </div>
+    {% else %}
+    <div class="empty-message">
+        No facilities found. Click the <strong>+</strong> button above to add one.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
