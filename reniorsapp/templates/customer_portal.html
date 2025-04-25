@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Portal</title>
+</head>
+<body>
+    <h2>Enter Your MPIN</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="mpin" placeholder="MPIN" required>
+        <button type="submit">Access</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if customer %}
+        <h3>Welcome, {{ customer.name }}</h3>
+        <ul>
+            <li><strong>Package:</strong> {{ customer.package_name }}</li>
+            <li><strong>Valid Until:</strong> {{ customer.validity_date }}</li>
+            <li><strong>Features:</strong> {{ customer.package_features }}</li>
+            <li><strong>Support Manager:</strong> {{ customer.support_manager_name }} ({{ customer.support_manager_contact }})</li>
+        </ul>
+    {% endif %}
+</body>
+</html>
+

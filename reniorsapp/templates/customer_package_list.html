@@ -1,0 +1,170 @@
+{% extends "adminpannel.html" %}
+{% load static %}
+
+{% block content %}
+<meta name="robots" content="noindex">
+<link rel="shortcut icon" href="https://reniors.com/images/renfav.png">
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #ffffff;
+        color: #333333;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .title {
+        font-size: 22px;
+        font-weight: 600;
+        color: #333333;
+    }
+
+    .add-btn {
+        text-decoration: none;
+        background-color: #333333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 50%;
+        font-size: 18px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s;
+    }
+
+    .add-btn:hover {
+        opacity: 0.8;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 6px;
+        box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+        border: 1px solid #dddddd;
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 14px;
+        border: 1px solid #dddddd;
+        word-break: break-word;
+    }
+
+    th {
+        background-color: #f4f4f4;
+        font-weight: 600;
+    }
+
+    td:nth-child(5) {
+        max-width: 200px;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        font-size: 15px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .edit-btn {
+        background-color: #e0f0ff;
+        color: #007bff;
+    }
+
+    .edit-btn:hover {
+        background-color: #cce5ff;
+    }
+
+    .delete-btn {
+        background-color: #ffe0e0;
+        color: #ff0000;
+    }
+
+    .delete-btn:hover {
+        background-color: #ffcccc;
+    }
+
+    .empty-message {
+        background-color: #fef9c3;
+        padding: 18px;
+        border-left: 4px solid #facc15;
+        border-radius: 6px;
+        margin-top: 20px;
+        color: #92400e;
+        font-size: 15px;
+        text-align: center;
+    }
+</style>
+
+<div class="header">
+    <h2 class="title">Customer Packages</h2>
+    <a href="{% url 'customer_package_add' %}" class="add-btn" title="Add New Customer Package">+</a>
+</div>
+
+{% if packages %}
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>MPIN</th>
+            <th>Package Name</th>
+            <th>Validity Date</th>
+            <th>Package Features</th>
+            <th>Support Manager Name</th>
+            <th>Support Manager Contact</th>
+            <th style="text-align: center;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for package in packages %}
+        <tr>
+            <td>{{ package.name }}</td>
+            <td>{{ package.mpin }}</td>
+            <td>{{ package.package_name }}</td>
+            <td>{{ package.validity_date }}</td>
+            <td>{{ package.package_features }}</td>
+            <td>{{ package.support_manager_name }}</td>
+            <td>{{ package.support_manager_contact }}</td>
+            <td>
+                <div class="actions">
+                    <a href="{% url 'customer_package_edit' package.pk %}" class="action-btn edit-btn" title="Edit">📝</a>
+                    <a href="{% url 'customer_package_delete' package.pk %}" class="action-btn delete-btn" onclick="return confirm('Are you sure?')" title="Delete">❌</a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<div class="empty-message">No customer packages available.</div>
+{% endif %}
+{% endblock %}

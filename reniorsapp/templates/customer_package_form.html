@@ -1,0 +1,158 @@
+{% extends "adminpannel.html" %}
+{% block content %}
+<meta name="robots" content="noindex">
+<link rel="shortcut icon" href="https://reniors.com/images/renfav.png">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h2 {
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    form {
+        max-width: 700px;
+        margin: auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+    }
+
+    label {
+        font-weight: 500;
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    button {
+        background-color: #222;
+        color: white;
+        border: none;
+        padding: 10px;
+        width: 100%;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 500;
+        transition: 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #000;
+    }
+
+    .back-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        font-size: 14px;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    .features-preview {
+        max-width: 700px;
+        margin: 30px auto;
+        background: #fff;
+        border-radius: 4px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .features-preview h3 {
+        margin-top: 0;
+        font-size: 18px;
+        color: #444;
+    }
+
+    .features-preview ul {
+        padding-left: 20px;
+    }
+
+    .features-preview li {
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #555;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2>{{ action }} Customer Package</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="name">Customer Name:</label>
+        <input type="text" id="name" name="name" value="{{ package.name|default:'' }}">
+
+        <label for="mpin">Customer Mpin:</label>
+        <input type="text" id="mpin" name="mpin" value="{{ package.mpin|default:'' }}">
+
+        <label for="package_name">Customer Package Name:</label>
+        <input type="text" id="package_name" name="package_name" value="{{ package.package_name|default:'' }}">
+
+        <label for="validity_date">Package Validity Date:</label>
+        <input type="date" id="validity_date" name="validity_date" value="{{ package.validity_date|date:'Y-m-d' }}">
+
+        <label for="package_features">Customer Package Features List:</label>
+        <textarea id="package_features" name="package_features" placeholder="Enter each feature on a new line...">{{ package.package_features|default:'' }}</textarea>
+
+        <label for="support_manager_name">Support Manager Name:</label>
+        <input type="text" id="support_manager_name" name="support_manager_name" value="{{ package.support_manager_name|default:'' }}">
+
+        <label for="support_manager_contact">Support Manager Contact Number:</label>
+        <input type="tel"
+               id="support_manager_contact"
+               name="support_manager_contact"
+               value="{{ package.support_manager_contact|default:'' }}"
+               pattern="^\d{10}$"
+               title="Please enter a valid 10-digit phone number"
+               required>
+
+        <button type="submit">Save</button>
+    </form>
+
+    {% if package.package_features %}
+    <div class="features-preview">
+        <h3>Package Features Preview:</h3>
+        <ul>
+            {% for feature in package.package_features.splitlines %}
+                {% if feature %}
+                    <li>{{ feature }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
